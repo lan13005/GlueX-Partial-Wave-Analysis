@@ -150,10 +150,10 @@ if __name__ == '__main__':
     os.chdir(fitDir)
     startBin=0
     endBin=30
-    numIters=1 # number of iterations to randomly sample and try to fit. No guarantees any of them will converge
+    numIters=50 # number of iterations to randomly sample and try to fit. No guarantees any of them will converge
     # EACH BIN SHARES THE SAME SEED FOR A GIVEN ITERATION
     seeds=[random.randint(1,100000) for _ in range(numIters)]
-    processes=60 # number of process to spawn to do the fits
+    processes=32 # number of process to spawn to do the fits
     logDir="logs/"
 
     cleanLogFolders()
