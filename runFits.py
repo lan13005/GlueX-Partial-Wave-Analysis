@@ -126,11 +126,11 @@ def gatherResults():
 if __name__ == '__main__':
     os.chdir(fitDir)
     startBin=0
-    endBin=45
+    endBin=1
     numIters=1 # number of iterations to randomly sample and try to fit. No guarantees any of them will converge
     # EACH BIN SHARES THE SAME SEED FOR A GIVEN ITERATION
     seeds=[random.randint(1,100000) for _ in range(numIters)]
-    processes=45 # number of process to spawn to do the fits
+    processes=1 # number of process to spawn to do the fits
     if processes > (endBin-startBin)*numIters:
         print("You are trying to spawn more processes than available jobs")
         print(" choose better")
