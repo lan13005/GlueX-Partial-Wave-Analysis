@@ -14,7 +14,7 @@ For each wave we want to include we need to do the following
     3. Scale the waves
 '''
 
-verbose=True
+verbose=False
 
 cfgFileLoops=True # DO NOT MODIFY THIS ON YOUR OWN
 reactionName="LOOPREAC" # DO NOT MODIFY THIS ON YOUR OWN

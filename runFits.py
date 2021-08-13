@@ -126,11 +126,11 @@ def gatherResults():
 if __name__ == '__main__':
     os.chdir(fitDir)
     startBin=0
-    endBin=1
-    numIters=1 # number of iterations to randomly sample and try to fit. No guarantees any of them will converge
+    endBin=30
+    numIters=30 # number of iterations to randomly sample and try to fit. No guarantees any of them will converge
     # EACH BIN SHARES THE SAME SEED FOR A GIVEN ITERATION
     seeds=[random.randint(1,100000) for _ in range(numIters)]
-    processes=1 # number of process to spawn to do the fits
+    processes=24 # number of process to spawn to do the fits
     if processes > (endBin-startBin)*numIters:
         print("You are trying to spawn more processes than available jobs")
         print(" choose better")
@@ -155,16 +155,16 @@ if __name__ == '__main__':
             [2,1,"-",False],
             [2,2,"+",False]
             ],
-            [
-            [0,0,"+",True],
-            [0,0,"-",True],
-            [2,-1,"-",False],
-            [2,0,"+",False],
-            [2,0,"-",False],
-            [2,1,"+",False],
-            [2,1,"-",False],
-            [2,2,"+",False]
-            ]
+#            [
+#            [0,0,"+",True],
+#            [0,0,"-",True],
+#            [2,-1,"-",False],
+#            [2,0,"+",False],
+#            [2,0,"-",False],
+#            [2,1,"+",False],
+#            [2,1,"-",False],
+#            [2,2,"+",False]
+#            ]
     ]
 
     for lmes in lmess:

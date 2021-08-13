@@ -43,7 +43,8 @@ polMap={
     -1:"AMO"
 }
 
-variables=["event","cosTheta_eta_hel","phi_eta_hel","mandelstam_t","Mpi0eta","weightASBS","Phi","BeamAngle"]
+variables=["event","cosTheta_eta_hel","phi_eta_hel","mandelstam_t","Mpi0eta","weightASBS","Phi","BeamAngle",
+        "prodPlane_x","prodPlane_y","prodPlane_z"]
 mapNames={"event"}
 
 
@@ -65,10 +66,10 @@ for dataFormat in [""]:#["data","flat"]:
 
     totalEvents=0
     for i,dataTag in enumerate(dataTags):
-#        fileloc="/d/grid17/ln16/myDSelector/degALL_malte_kmatrix_2018_8_mEllipse_8288_tLT1_chi13_omegacut_treeFlat_DSelector.root"
-#        treename="degALL_malte_kmatrix_2018_8_mEllipse_8288_tLT1_chi13_omegacut_tree_flat"
-        fileloc="/d/grid17/ln16/myDSelector/degALL_flat_2018_8_mEllipse_8288_chi13_tLT1_omegacut_treeFlat_DSelector.root"
-        treename="tree_4g_flat"
+        fileloc="/d/grid17/ln16/myDSelector/degALL_malte_kmatrix_2018_8_mEllipse_8288_tLT1_chi13_omegacut_treeFlat_DSelector.root"
+        treename="degALL_malte_kmatrix_2018_8_mEllipse_8288_tLT1_chi13_omegacut_tree_flat"
+#        fileloc="/d/grid17/ln16/myDSelector/degALL_flat_2018_8_mEllipse_8288_chi13_tLT1_omegacut_treeFlat_DSelector.root"
+#        treename="tree_4g_flat"
         datas.append(uproot.open(fileloc))
         trees.append(datas[i][treename])
         dfs.append(trees[i].arrays(variables,outputtype=pandas.DataFrame))
@@ -127,13 +128,13 @@ for dataFormat in [""]:#["data","flat"]:
         phase1_weight_subset=phase1_data_subset[["weightASBS","mass"]]
         phase1_data_subset=phase1_data_subset.drop("weightASBS",axis=1)
     
-        #############################
-        # Write to csvs
-        #############################
-#        phase1_weight_subset.to_csv("malte_kmatrix_weights.csv",index=False)
-#        phase1_data_subset.to_csv("malte_kmatrix_data.csv",index=False)
-        phase1_data_subset.to_csv("flat_2018_8_data_"+polMap[pol]+".csv",index=False)
-        phase1_weight_subset.to_csv("flat_2018_8_weights_"+polMap[pol]+".csv",index=False)
+#        #############################
+#        # Write to csvs
+#        #############################
+##        phase1_weight_subset.to_csv("malte_kmatrix_weights.csv",index=False)
+##        phase1_data_subset.to_csv("malte_kmatrix_data.csv",index=False)
+#        phase1_data_subset.to_csv("flat_2018_8_data_"+polMap[pol]+".csv",index=False)
+#        phase1_weight_subset.to_csv("flat_2018_8_weights_"+polMap[pol]+".csv",index=False)
 
 
 # In[ ]:
