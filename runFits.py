@@ -137,8 +137,8 @@ def gatherResults():
 ### CHOOSE BIN NUMBER
 if __name__ == '__main__':
     os.chdir(fitDir)
-    startBin=18
-    endBin=19
+    startBin=0
+    endBin=1
     numIters=1 # number of iterations to randomly sample and try to fit. No guarantees any of them will converge
     # EACH BIN SHARES THE SAME SEED FOR A GIVEN ITERATION
     seeds=[random.randint(1,100000) for _ in range(numIters)]

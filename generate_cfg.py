@@ -202,10 +202,15 @@ def writeCfg(lmes,reference_file,seed,i):
         preamble=[line.rstrip().lstrip()+"-"+str(i)+"\n" if line.startswith("fit") else line for line in preamble]
 
         reactionLine=[line for line in preamble if line.startswith("reaction")]
+
         assert len(reactionLine)==1
         fitName=reactionLine[0].split(" ")[1].rstrip().lstrip()
-        cfgFileLoops = fitName=="LOOPREAC"
+        cfgFileLoops = any([line.startswith("loop") for line in preamble])
         if cfgFileLoops:
+            loopLines=[line for line in preamble if line.startswith("loop")]
+            loopLineKeys=[line.split(" ")[1] for line in loopLines]
+            if "LOOPREAC" not in loopLineKeys or "LOOPPOLANG" not in loopLineKeys or "LOOPPOLVAL" not in loopLineKeys:
+                raise ValueError("LOOPREAC or LOOPPOLANG or LOOPPOLVAL not defined/found. Make sure you use something like: loop LOOPREAC reac1 reac2 ...\n   in your reference config file or else the program becomes unsure what the name of the parameter should be")
             reactionName="LOOPREAC"
             reactionAngle="LOOPOLANG"
             reactionPol="LOOPPOLVAL"
@@ -214,6 +219,10 @@ def writeCfg(lmes,reference_file,seed,i):
             pols = [pol.split("_")[1] for pol in pols]
             pols = "_".join(pols)
         else:
+            defineLines=[line for line in preamble if line.startswith("define")]
+            defineLineKeys=[line.split(" ")[1] for line in defineLines]
+            if "polAngle" not in defineLineKeys or "polVal" not in defineLineKeys:
+                raise ValueError("polAngle or polVal not defined/found. Make sure you use something like: define polAngle 0\n   in your reference config file or else the program becomes unsure what the name of the parameter should be")
             reactionName=fitName
             reactionAngle="polAngle"
             reactionPol="polVal"
