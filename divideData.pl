@@ -2,9 +2,9 @@
 
 use Cwd;
 
-$lowMass = 0.8;#0.7; # 0.8; #is a shared lower cutoff for all 3 datas.
-$highMass = 2.0;#2.5; #2.0; #is the upper cutoff of the thrown data and 3ish is the upper cutoff for the reco/data
-$nBins = 30;#45; #30; #45; because it is kind of small and (2-0.7)/26 = 0.05 which is nice and round
+$lowMass = 0.7; # 0.8; #is a shared lower cutoff for all 3 datas.
+$highMass = 2.5; #2.0; #is the upper cutoff of the thrown data and 3ish is the upper cutoff for the reco/data
+$nBins = 45; #30; #45; because it is kind of small and (2-0.7)/26 = 0.05 which is nice and round
 
 $fitName = "EtaPi_fit";
 
@@ -30,6 +30,15 @@ $baseDatFileName="amptools_malte_kmatrix_2018_8_t0103_e8288_tot_";
 $baseBkgFileName="amptools_malte_kmatrix_2018_8_t0103_e8288_sb_";
 
 #$baseGenDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/";
+#$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/dataDriven_backgrounds/";
+#$baseBkgDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/dataDriven_backgrounds/";
+#$baseDatDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/dataDriven_backgrounds/";
+#$baseDatFileName="DAT_FILE";
+#$baseBkgFileName="BKGND_FILE";
+#$baseAccFileName="FLAT_SIG_FILE";
+#$baseGenFileName="amptools_flat_gen_phase1_";
+
+#$baseGenDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/";
 #$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/";
 #$baseBkgDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/";
 #$baseDatDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/";
@@ -38,7 +47,7 @@ $baseBkgFileName="amptools_malte_kmatrix_2018_8_t0103_e8288_sb_";
 #$baseBkgFileName="amptools_data_phase1_t0103_e8288_sb_";
 #$baseDatFileName="amptools_data_phase1_t0103_e8288_tot_";
 
-@polTags=qw(000); #045 090 135 AMO);
+@polTags=qw(000 045 090 135 AMO);
 print "DATAFILES:\n";
 foreach $polTag (@polTags){
     print "$baseDatDir$baseDatFileName$polTag\.root\n";
@@ -66,8 +75,9 @@ print "------------------\n";
 
 # this file sould be used for partially polarized or unpolarized beam fits
 
-#$cfgTempl = "$workingDir/zlm_etapi_bothReflect_bothM_loop.cfg";
-$cfgTempl = "$workingDir/zlm_etapi_bothReflect_bothM.cfg";
+$cfgTempl = "$workingDir/zlm_etapi_bothReflect_bothM_loop.cfg";
+#$cfgTempl = "$workingDir/zlm_etapi_bothReflect_bothM.cfg";
+#$cfgTempl = "$workingDir/zlm_etapi_bothReflect_bothM_loop_sb0.cfg";
 
 ### things below here probably don't need to be modified
 

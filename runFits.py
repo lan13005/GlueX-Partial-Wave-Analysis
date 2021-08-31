@@ -48,7 +48,12 @@ def getAmplitudesInBin(params):
         if os.path.exists(resultsFile):
             os.remove(resultsFile)
 
-        output=subprocess.check_output(callFit.split(" "))#, stdout=logFile, stderr=logFile)
+        try:
+            output=subprocess.check_output(callFit.split(" "))#, stdout=logFile, stderr=logFile)
+        except subprocess.CalledProcessError as err:
+            print("*** ABOVE CALL FAILED TO COMPLETE - TRY TO RUN THE FIT MANUALLY IN THE CORRESPONDING BIN FOLDER AS FOLLOWS ***\n*** cd {0}".format(fitDir+"/bin_"+str(binNum))+" ***\n*** "+callFit+" ***\n*** IF RUNFITS.PY DOES NOT EXIT BY ITSELF YOU SHOULD KILL IT MANUALLY NOW ***")
+            exit(0)
+
         os.rename(binCfgDest,logDir+"_"+waveset+"/"+binCfgDest)
 
         logFile.write("ITERATION: "+str(j)+"\n")
@@ -65,11 +70,13 @@ def getAmplitudesInBin(params):
 
         resultsFilePath=logDir+"_"+waveset+"/"+resultsFile
         print("Moving fit results to: "+os.getcwd()+resultsFilePath)
-        if os.path.exists(resultsFile):# and os.stat(resultsFile).st_size==0: # if the fit files is not empty then we will try and use it
+        if os.path.exists(resultsFile) and os.stat(resultsFile).st_size!=0: # if the fit files is not empty then we will try and use it
             shutil.move(resultsFile,resultsFilePath)
             getAmplitudeCmd='getAmpsInBin "'+binCfgDest+'" "'+resultsFilePath+'" "'+pols+'" "'+str(j)+'"'
             print(getAmplitudeCmd)
-            output=os.popen(getAmplitudeCmd).read()
+            getAmplitudeCmd=getAmplitudeCmd.split(" ")
+            getAmplitudeCmd=[cmd.replace('"','') for cmd in getAmplitudeCmd]
+            output=subprocess.check_output(getAmplitudeCmd)
             output=output.split("\n")
             for out in output:
                 if len(out.split("\t"))>1:
@@ -80,6 +87,11 @@ def getAmplitudesInBin(params):
                     if out[0].isdigit():
                         outFile.write(status+"\t")
                         outFile.write(out+"\n")
+        else:
+            print("fit file does not exist or is empty! The fit program failed to complete on bin {}".format(binNum))
+            print("  fit file exists? {}".format(os.path.exists(resultsFile)))
+            print("  fit file has non-zero size? {}".format(os.stat(resultsFile).st_size!=0))
+
     os.chdir("..")
 
 def cleanLogFolders():
@@ -125,12 +137,12 @@ def gatherResults():
 ### CHOOSE BIN NUMBER
 if __name__ == '__main__':
     os.chdir(fitDir)
-    startBin=0
-    endBin=30
-    numIters=30 # number of iterations to randomly sample and try to fit. No guarantees any of them will converge
+    startBin=18
+    endBin=19
+    numIters=1 # number of iterations to randomly sample and try to fit. No guarantees any of them will converge
     # EACH BIN SHARES THE SAME SEED FOR A GIVEN ITERATION
     seeds=[random.randint(1,100000) for _ in range(numIters)]
-    processes=24 # number of process to spawn to do the fits
+    processes=1 # number of process to spawn to do the fits
     if processes > (endBin-startBin)*numIters:
         print("You are trying to spawn more processes than available jobs")
         print(" choose better")
@@ -158,12 +170,22 @@ if __name__ == '__main__':
 #            [
 #            [0,0,"+",True],
 #            [0,0,"-",True],
+#            [2,-2,"-",False],
+#            [2,-2,"+",False],
 #            [2,-1,"-",False],
-#            [2,0,"+",False],
+#            [2,-1,"+",False],
 #            [2,0,"-",False],
-#            [2,1,"+",False],
+#            [2,0,"+",False],
 #            [2,1,"-",False],
-#            [2,2,"+",False]
+#            [2,1,"+",False],
+#            [2,2,"-",False],
+#            [2,2,"+",False],
+#            [1,-1,"+",False],
+#            [1,-1,"-",False],
+#            [1,0,"+",False],
+#            [1,0,"-",False],
+#            [1,1,"+",False],
+#            [1,1,"-",False]
 #            ]
     ]
 
