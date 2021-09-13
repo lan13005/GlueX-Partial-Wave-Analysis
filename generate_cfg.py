@@ -18,7 +18,7 @@ verbose=False
 
 cfgFileLoops=True # DO NOT MODIFY THIS ON YOUR OWN
 reactionName="LOOPREAC" # DO NOT MODIFY THIS ON YOUR OWN
-reactionAngle="LOOPOLANG" # DO NOT MODIFY THIS ON YOUR OWN
+reactionAngle="LOOPPOLANG" # DO NOT MODIFY THIS ON YOUR OWN
 reactionPol="LOOPSCALE" # DO NOT MODIFY THIS ON YOUR OWN
 
 def constructWave(l,m,e):
@@ -212,7 +212,7 @@ def writeCfg(lmes,reference_file,seed,i):
             if "LOOPREAC" not in loopLineKeys or "LOOPPOLANG" not in loopLineKeys or "LOOPPOLVAL" not in loopLineKeys:
                 raise ValueError("LOOPREAC or LOOPPOLANG or LOOPPOLVAL not defined/found. Make sure you use something like: loop LOOPREAC reac1 reac2 ...\n   in your reference config file or else the program becomes unsure what the name of the parameter should be")
             reactionName="LOOPREAC"
-            reactionAngle="LOOPOLANG"
+            reactionAngle="LOOPPOLANG"
             reactionPol="LOOPPOLVAL"
             pols = [line for line in preamble if line.startswith("loop LOOPREAC")]
             pols = pols[0].rstrip().lstrip().split(" ")[2:]

@@ -59,17 +59,20 @@ def getAmplitudesInBin(params):
         logFile.write("ITERATION: "+str(j)+"\n")
         logFile.write(output)
         if "STATUS=CONVERGED" in output:
-            status="C"
+            status="C" # (C)onverged
         elif "STATUS=FAILED" in output:
-            status="F"
+            if "ERR MATRIX NOT POS-DEF" in [line.lstrip().rstrip() for line in output.split("\n")]:
+                status="H" # (H)essian failed
+            else:
+                status="F" # (F)ailed 
         elif "STATUS=CALL LIMIT" in output:
-            status="L"
+            status="L" # (L)imit call 
         else:
-            status="U"
+            status="U" # (U)ncertain / unsure / unqualified
         print("Status: "+status)
 
         resultsFilePath=logDir+"_"+waveset+"/"+resultsFile
-        print("Moving fit results to: "+os.getcwd()+resultsFilePath)
+        print("Moving fit results to: "+os.getcwd()+"/"+resultsFilePath)
         if os.path.exists(resultsFile) and os.stat(resultsFile).st_size!=0: # if the fit files is not empty then we will try and use it
             shutil.move(resultsFile,resultsFilePath)
             getAmplitudeCmd='getAmpsInBin "'+binCfgDest+'" "'+resultsFilePath+'" "'+pols+'" "'+str(j)+'"'
@@ -138,11 +141,11 @@ def gatherResults():
 if __name__ == '__main__':
     os.chdir(fitDir)
     startBin=0
-    endBin=45
-    numIters=30 # number of iterations to randomly sample and try to fit. No guarantees any of them will converge
+    endBin=50
+    numIters=50 # number of iterations to randomly sample and try to fit. No guarantees any of them will converge
     # EACH BIN SHARES THE SAME SEED FOR A GIVEN ITERATION
     seeds=[random.randint(1,100000) for _ in range(numIters)]
-    processes=24 # number of process to spawn to do the fits
+    processes=48 # number of process to spawn to do the fits
     if processes > (endBin-startBin)*numIters:
         print("You are trying to spawn more processes than available jobs")
         print(" choose better")
@@ -160,6 +163,16 @@ if __name__ == '__main__':
             [1,0,"-",False],
             [1,1,"+",False],
             [1,1,"-",False],
+            [2,-1,"-",False],
+            [2,0,"+",False],
+            [2,0,"-",False],
+            [2,1,"+",False],
+            [2,1,"-",False],
+            [2,2,"+",False]
+            ],
+            [
+            [0,0,"+",True],
+            [0,0,"-",True],
             [2,-1,"-",False],
             [2,0,"+",False],
             [2,0,"-",False],

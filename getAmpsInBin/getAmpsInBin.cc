@@ -16,10 +16,11 @@ using namespace std;
 
 int main( int argc, char* argv[] ){
     if (argc!=5){
-        cout << "Requires 3 arguments: " << endl;
-        cout << "The original cfg file, just to get the waveset from" << endl;
-        cout << "The fit file which should be output from the `fit` program" << endl;
-        cout << "the iteration number (i.e. when you do multiple fits with different initialization conditions you dont want to overwrite things" << endl;
+        cout << "Requires 4 arguments: " << endl;
+        cout << "1. The original cfg file, just to get the waveset from" << endl;
+        cout << "2. The fit file which should be output from the `fit` program" << endl;
+        cout << "3. polarization string that is underscore separate. i.e. 000_045_090" << endl;
+        cout << "4. the iteration number (i.e. when you do multiple fits with different initialization conditions you dont want to overwrite things" << endl;
         exit(-1);
     }
     string cfgFile(argv[1]);
@@ -63,6 +64,26 @@ int main( int argc, char* argv[] ){
     }
     cout << "all\tall_err\t";
 
+    // **** Extra header summing L-waves and e-reflectivities. i.e. allows us to sum all D-waves in positive reflectivity.
+    map<string,set<string>> les; // mapping a given L to the potential reflectivities, e. Wanted a general way to access which wave/reflectivity combinations there are
+    for (auto lme: lmes){
+        string L=string{lme[0]};
+        string e=string{lme.back()};
+        if (les.find(L)==les.end())
+            les[L]=set<string>{e};
+        else{
+            if (les[L].find(e)==les[L].end())
+                les[L].insert(e);
+        }
+    }
+    map<string, vector<string>> wave_ref_amps; // map le to a vector of amplitudes to get the intensity with 
+    for (auto le: les){
+        for (auto e: le.second){
+            cout << le.first << e << "\t" << le.first << e << "_err\t"; 
+            wave_ref_amps[le.first+e] = vector<string>{};
+        }
+    }
+
     // **** HEADER FOR THE PHASES
     int nPhases=0;
     set<set<string>> usedPhases;
@@ -103,18 +124,36 @@ int main( int argc, char* argv[] ){
     for (auto lme: lmes){
         string sign=string{lme.back()};
         string refl=mapSignToRef[sign];
+        string L=string{lme[0]};
         vector<string> etaPiAmp;
         for (auto polarization : polarizations){
             etaPiAmp.push_back((fitName+"_"+polarization+"::"+refl+"Im::"+lme).c_str());
             etaPiAmp.push_back((fitName+"_"+polarization+"::"+refl+"Re::"+lme).c_str());
             all.push_back((fitName+"_"+polarization+"::"+refl+"Im::"+lme).c_str());
             all.push_back((fitName+"_"+polarization+"::"+refl+"Re::"+lme).c_str());
+            if ( wave_ref_amps.find(L+sign) == wave_ref_amps.end() ){
+                cout << "\n\nCOULD NOT FIND " << L << sign << " IN wave_ref_amps! Fix me! exiting..." << endl;
+                exit(0);
+            }
+            else{
+                wave_ref_amps[L+sign].push_back((fitName+"_"+polarization+"::"+refl+"Im::"+lme).c_str());
+                wave_ref_amps[L+sign].push_back((fitName+"_"+polarization+"::"+refl+"Re::"+lme).c_str());
+            }
         }
         pair< double, double > etaPiInt = results.intensity( etaPiAmp,doAcceptanceCorrection );
         cout << etaPiInt.first << "\t" << etaPiInt.second << "\t";
     }
     pair< double, double > allInt = results.intensity( all,doAcceptanceCorrection );
     cout << allInt.first << "\t" << allInt.second << "\t" ;
+
+    for ( auto wave_ref : wave_ref_amps ){
+        //cout << "\nwave set: " << wave_ref.first << endl;
+        //for ( auto amp : wave_ref.second ){
+        //    cout << amp << endl;
+        //}
+        pair< double, double > waveSetInt = results.intensity( wave_ref.second, doAcceptanceCorrection );
+        cout << waveSetInt.first << "\t" << waveSetInt.second << "\t" ;
+    }
 
     //////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////
@@ -178,7 +217,7 @@ int main( int argc, char* argv[] ){
     //cout << "complex " << newAmp << " = " << prodPar << endl; // " | intensity = " << results.intensity(ampVec).first << endl;
 
 
-    chdir( ".." );
+//    chdir( ".." );
     
     return 0;
 }
