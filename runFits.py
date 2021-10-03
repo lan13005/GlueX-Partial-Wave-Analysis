@@ -75,6 +75,8 @@ def getAmplitudesInBin(params):
         print("Moving fit results to: "+os.getcwd()+"/"+resultsFilePath)
         if os.path.exists(resultsFile) and os.stat(resultsFile).st_size!=0: # if the fit files is not empty then we will try and use it
             shutil.move(resultsFile,resultsFilePath)
+            if os.path.exists("param_init.cfg") and os.stat("param_init.cfg").st_size!=0: # param_init.cfg only exists if the fit converged
+                shutil.move("param_init.cfg",os.getcwd()+"/"+logDir+"_"+waveset+"/param_init_"+str(j)+".cfg")
             getAmplitudeCmd='getAmpsInBin "'+binCfgDest+'" "'+resultsFilePath+'" "'+pols+'" "'+str(j)+'"'
             print(getAmplitudeCmd)
             getAmplitudeCmd=getAmplitudeCmd.split(" ")
@@ -141,11 +143,11 @@ def gatherResults():
 if __name__ == '__main__':
     os.chdir(fitDir)
     startBin=0
-    endBin=50
+    endBin=45
     numIters=50 # number of iterations to randomly sample and try to fit. No guarantees any of them will converge
     # EACH BIN SHARES THE SAME SEED FOR A GIVEN ITERATION
     seeds=[random.randint(1,100000) for _ in range(numIters)]
-    processes=48 # number of process to spawn to do the fits
+    processes=45 # number of process to spawn to do the fits
     if processes > (endBin-startBin)*numIters:
         print("You are trying to spawn more processes than available jobs")
         print(" choose better")
@@ -156,30 +158,62 @@ if __name__ == '__main__':
     # Define the set of wavesets you want to loop over
     #######################
     lmess=[
+#            # S + TMD + P
+#            [
+#            [0,0,"+",True],
+#            [0,0,"-",True],
+#            [1,0,"+",False],
+#            [1,0,"-",False],
+#            [1,1,"+",False],
+#            [1,1,"-",False],
+#            [2,-1,"-",False],
+#            [2,0,"+",False],
+#            [2,0,"-",False],
+#            [2,1,"+",False],
+#            [2,1,"-",False],
+#            [2,2,"+",False]
+#            ],
+#            # S + TMD 
+#            [
+#            [0,0,"+",True],
+#            [0,0,"-",True],
+#            [2,-1,"-",False],
+#            [2,0,"+",False],
+#            [2,0,"-",False],
+#            [2,1,"+",False],
+#            [2,1,"-",False],
+#            [2,2,"+",False]
+#            ],
             [
             [0,0,"+",True],
             [0,0,"-",True],
+            [2,0,"-",False],
+            [2,0,"+",False],
+            [2,1,"-",False],
+            [2,1,"+",False],
+            [2,2,"-",False],
+            [2,2,"+",False],
             [1,0,"+",False],
             [1,0,"-",False],
             [1,1,"+",False],
-            [1,1,"-",False],
-            [2,-1,"-",False],
-            [2,0,"+",False],
-            [2,0,"-",False],
-            [2,1,"+",False],
-            [2,1,"-",False],
-            [2,2,"+",False]
-            ],
-            [
-            [0,0,"+",True],
-            [0,0,"-",True],
-            [2,-1,"-",False],
-            [2,0,"+",False],
-            [2,0,"-",False],
-            [2,1,"+",False],
-            [2,1,"-",False],
-            [2,2,"+",False]
-            ],
+            [1,1,"-",False]
+            ]
+# KMATRIX
+#            [
+#            [0,0,"+",True],
+#            [0,0,"-",True],
+#            [2,0,"+",False],
+#            [2,0,"-",False],
+#            [2,2,"+",False],
+#            [2,2,"-",False],
+#            ],
+#            [
+#            [0,0,"+",True],
+#            [0,0,"-",True],
+#            [2,2,"+",False],
+#            [2,2,"-",False],
+#            ],
+# ALL 
 #            [
 #            [0,0,"+",True],
 #            [0,0,"-",True],

@@ -7,9 +7,9 @@ use Cwd;
 #$nBins = 45; #30; #45; because it is kind of small and (2-0.7)/26 = 0.05 which is nice and round
 
 # for the 5tbins, always have 0.8 as the lower bound
-$lowMass = 0.8;
-$highMass = 2.8; #2.0,2.4,2.6,2.8,2.8
-$nBins = 50; #30,40,45,50,50
+$lowMass = 0.7;#0.82;#0.7; # 0.8 for 5 tbins
+$highMass = 2.5;#1.98;#2.5; #2.0,2.4,2.6,2.8,2.8
+$nBins = 45;#29;#45; #30,40,45,50,50
 
 $fitName = "EtaPi_fit";
 
@@ -25,14 +25,14 @@ print "\n===================================\n";
 # to generate them or don't have them, see the documentation in gen_3pi
 # the Simulation area of the repository
 
-#$baseGenDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/baseFiles/";
-#$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/baseFiles/";
+#$baseGenDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/shared_gen_files/baseFiles/";
+#$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/3tbins/baseFiles/";
 #$baseBkgDir="/d/grid17/ln16/myDSelector/amptools/zMalte_kmatrix/";
 #$baseDatDir="/d/grid17/ln16/myDSelector/amptools/zMalte_kmatrix/";
 #$baseGenFileName="amptools_flat_gen_2018_8_";
-#$baseAccFileName="amptools_flat_2018_8_t0103_e8288_sig_";
-#$baseDatFileName="amptools_malte_kmatrix_2018_8_t0103_e8288_tot_";
-#$baseBkgFileName="amptools_malte_kmatrix_2018_8_t0103_e8288_sb_";
+#$baseAccFileName="amptools_flat_2018_8_t0110_e8288_sig_";
+#$baseDatFileName="amptools_malte_kmatrix_2018_8_t0110_e8288_tot_";
+#$baseBkgFileName="amptools_malte_kmatrix_2018_8_t0110_e8288_sb_";
 
 #$baseGenDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/";
 #$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/dataDriven_backgrounds/";
@@ -43,14 +43,23 @@ print "\n===================================\n";
 #$baseAccFileName="FLAT_SIG_FILE";
 #$baseGenFileName="amptools_flat_gen_phase1_";
 
+#$baseGenDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/shared_gen_files/";
+#$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/5tbins/";
+#$baseBkgDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/5tbins/";
+#$baseDatDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/5tbins/";
+#$baseGenFileName="amptools_flat_gen_phase1_";
+#$baseAccFileName="amptools_flat_phase1_t0102_e8288_sig_";
+#$baseBkgFileName="amptools_data_phase1_t0102_e8288_sb_";
+#$baseDatFileName="amptools_data_phase1_t0102_e8288_tot_";
+#
 $baseGenDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/shared_gen_files/";
-$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/5tbins/";
-$baseBkgDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/5tbins/";
-$baseDatDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/5tbins/";
+$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/t0105_zach_dnp/";#_vh/";
+$baseBkgDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/t0105_zach_dnp/";#_vh/";
+$baseDatDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/t0105_zach_dnp/";#_vh/";
 $baseGenFileName="amptools_flat_gen_phase1_";
-$baseAccFileName="amptools_flat_phase1_t0751_e8288_sig_";
-$baseBkgFileName="amptools_data_phase1_t0751_e8288_sb_";
-$baseDatFileName="amptools_data_phase1_t0751_e8288_tot_";
+$baseAccFileName="amptools_flat_phase1_t0105_e8288_sig_";
+$baseBkgFileName="amptools_data_phase1_t0105_e8288_sb_";
+$baseDatFileName="amptools_data_phase1_t0105_e8288_tot_";
 
 @polTags=qw(000 045 090 135 AMO);
 print "DATAFILES:\n";
