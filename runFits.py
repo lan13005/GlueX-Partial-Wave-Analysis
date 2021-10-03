@@ -85,7 +85,7 @@ def getAmplitudesInBin(params):
             output=output.split("\n")
             for out in output:
                 if len(out.split("\t"))>1:
-                    if haveHeader==False and not out[0].isdigit():
+                    if haveHeader==False and out.split("\t")[-1]=="iteration": #not out[0].isdigit():
                         outFile.write("status\t")
                         outFile.write(out+"\n")
                         haveHeader=True
