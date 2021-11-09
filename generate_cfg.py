@@ -15,6 +15,7 @@ For each wave we want to include we need to do the following
 '''
 
 verbose=False
+delimiterForOutFileName="_" # The output config file would have a name like 000__045__090
 
 cfgFileLoops=True # DO NOT MODIFY THIS ON YOUR OWN
 reactionName="LOOPREAC" # DO NOT MODIFY THIS ON YOUR OWN
@@ -168,7 +169,7 @@ def writeWave(l,m,e,anchor,preamble):
 def constructOutputFileName(lmes,i=-1):
     mapLtoSpect={0:"S",1:"P",2:"D"};
     names=[mapLtoSpect[lme[0]]+str(lme[1])+lme[2] for lme in lmes]
-    cfgFileName="_".join(names)
+    cfgFileName=delimiterForOutFileName.join(names)
     if i==-1:
         return cfgFileName
     else:

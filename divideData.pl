@@ -43,23 +43,23 @@ print "\n===================================\n";
 #$baseAccFileName="FLAT_SIG_FILE";
 #$baseGenFileName="amptools_flat_gen_phase1_";
 
-#$baseGenDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/shared_gen_files/";
-#$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/5tbins/";
-#$baseBkgDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/5tbins/";
-#$baseDatDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/5tbins/";
-#$baseGenFileName="amptools_flat_gen_phase1_";
-#$baseAccFileName="amptools_flat_phase1_t0102_e8288_sig_";
-#$baseBkgFileName="amptools_data_phase1_t0102_e8288_sb_";
-#$baseDatFileName="amptools_data_phase1_t0102_e8288_tot_";
-#
 $baseGenDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/shared_gen_files/";
-$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/t0105_zach_dnp/";#_vh/";
-$baseBkgDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/t0105_zach_dnp/";#_vh/";
-$baseDatDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/t0105_zach_dnp/";#_vh/";
+$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/3tbins/";
+$baseBkgDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/3tbins/";
+$baseDatDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/3tbins/";
 $baseGenFileName="amptools_flat_gen_phase1_";
-$baseAccFileName="amptools_flat_phase1_t0105_e8288_sig_";
-$baseBkgFileName="amptools_data_phase1_t0105_e8288_sb_";
-$baseDatFileName="amptools_data_phase1_t0105_e8288_tot_";
+$baseAccFileName="amptools_flat_phase1_t0103_e8288_sig_";
+$baseBkgFileName="amptools_data_phase1_t0103_e8288_sb_";
+$baseDatFileName="amptools_data_phase1_t0103_e8288_tot_";
+#
+#$baseGenDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/shared_gen_files/";
+#$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/t0110_zach_dnp/";#_vh/";
+#$baseBkgDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/t0110_zach_dnp/";#_vh/";
+#$baseDatDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/t0110_zach_dnp/";#_vh/";
+#$baseGenFileName="amptools_flat_gen_phase1_";
+#$baseAccFileName="amptools_flat_phase1_t0110_e8288_sig_";
+#$baseBkgFileName="amptools_data_phase1_t0110_e8288_sb_";
+#$baseDatFileName="amptools_data_phase1_t0110_e8288_tot_";
 
 @polTags=qw(000 045 090 135 AMO);
 print "DATAFILES:\n";
@@ -89,7 +89,7 @@ print "------------------\n";
 
 # this file sould be used for partially polarized or unpolarized beam fits
 
-$cfgTempl = "$workingDir/zlm_etapi_bothReflect_bothM_loop.cfg";
+$cfgTempl = "$workingDir/zlm_etapi_bothReflect_bothM_loop_zeroPolMag.cfg";
 #$cfgTempl = "$workingDir/zlm_etapi_bothReflect_bothM.cfg";
 #$cfgTempl = "$workingDir/zlm_etapi_bothReflect_bothM_loop_sb0.cfg";
 
@@ -100,7 +100,7 @@ $fitDir = "$workingDir/$fitName/";
 print "Output fitDir: $fitDir";
 print "\n";
 #mkdir $fitDir unless -d $fitDir;
-`./ramdisk.sh`;
+`./ramdisk.sh $fitName`;
 
 chdir $fitDir;
 
@@ -144,11 +144,11 @@ for( $i = 0; $i < $nBins; ++$i ){
 
   while( <CFGIN> ){
     foreach $polTag (@polTags){
-        s/DATAFILE_$polTag/$baseDatFileName$polTag\_$i.root/;
-        s/BKGNDFILE_$polTag/$baseBkgFileName$polTag\_$i.root/;
-        s/ACCMCFILE_$polTag/$baseAccFileName$polTag\_$i.root/;
-        s/GENMCFILE_$polTag/$baseGenFileName$polTag\_$i.root/;
-        s/NIFILE_$polTag/bin_$i\_$polTag.ni/;
+        s:DATAFILE_$polTag:${fitDir}bin_$i/$baseDatFileName$polTag\_$i.root:;
+        s:BKGNDFILE_$polTag:${fitDir}bin_$i/$baseBkgFileName$polTag\_$i.root:;
+        s:ACCMCFILE_$polTag:${fitDir}bin_$i/$baseAccFileName$polTag\_$i.root:;
+        s:GENMCFILE_$polTag:${fitDir}bin_$i/$baseGenFileName$polTag\_$i.root:;
+        s:NIFILE_$polTag:bin_$i\_$polTag.ni:;
     }
 
     s/FITNAME/bin_$i/;
@@ -159,7 +159,7 @@ for( $i = 0; $i < $nBins; ++$i ){
   close CFGOUT;
   close CFGIN;
   
-  system( "touch param_init.cfg" );
+  #system( "touch param_init.cfg" );
 
   chdir $fitDir;
 }
