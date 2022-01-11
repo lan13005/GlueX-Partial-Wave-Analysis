@@ -1,6 +1,7 @@
 ## Amplitude Analysis Implementation for EtaPi
 GlueX uses a variety of programs to perform amplitude analyses. This repository contains a set of scripts that orchestrates an analysis for the photoproduction of etapi0. An additional program is required in halld_sim, getAmpInBins which will be used to grab intensities+errors of the partial waves and the phases between them. Simple multiprocessing is used to run parallel fits. Supporting scripts exist to help modify and construct configuration files allowing one to loop over potential wavesets. Fit results are aggregated and results are plotted interactively using Jupyter-notebook. 
 
+## Details of important programs
 divideData.pl will split the data into mass bins for all the input datasets
 
 getAmpInBins folder needs to be put into your HALLD_SIM folder at $HALLD_SIM_HOME/src/programs/AmplitudeAnalysis/. In this AmplitudeAnalysis folder there should be a Sconscript file. Include the string "getAmpInBins" into the subdirs list. The waveset to extract the amplitudes in will be determined by the name of the config file which will ultimately be created by runFits.py (which implements a config generator). Rebuild HALLD_SIM. 
