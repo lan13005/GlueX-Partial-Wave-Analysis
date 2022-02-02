@@ -15,18 +15,24 @@
 using namespace std;
 
 int main( int argc, char* argv[] ){
-    if (argc!=5){
-        cout << "Requires 4 arguments: " << endl;
+    if (argc!=6){
+        cout << "Requires 5 arguments: " << endl;
         cout << "1. The original cfg file, just to get the waveset from" << endl;
         cout << "2. The fit file which should be output from the `fit` program" << endl;
         cout << "3. polarization string that is underscore separate. i.e. 000_045_090" << endl;
         cout << "4. the iteration number (i.e. when you do multiple fits with different initialization conditions you dont want to overwrite things" << endl;
+        cout << "5. true to acceptance correct. Anything else will not correct" << endl;
         exit(-1);
     }
     string cfgFile(argv[1]);
     string resultsFile(argv[2]);
     string polString(argv[3]);
     string iter(argv[4]);
+    bool doAcceptanceCorrection;
+    if (string{argv[5]}=="true")
+        doAcceptanceCorrection=true;
+    else
+        doAcceptanceCorrection=false;
 
     cout << "Reading " << resultsFile << endl;
     FitResults results( resultsFile.c_str() );
@@ -34,7 +40,6 @@ int main( int argc, char* argv[] ){
 
     // Create output file
     string outFile="amplitudes"+iter+".txt";
-    bool doAcceptanceCorrection=true;
 
     // Parse the cfg file name to determine the waveset
     string delimiter = "_";

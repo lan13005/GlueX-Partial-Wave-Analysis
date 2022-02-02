@@ -18,6 +18,7 @@ seedAmpInit=9183 # choose a seed to randomly start to sample from
 rndSamp_flag=True; # doesnt do anything right now
 verbose=False
 keepLogs=True
+doAccCorr="true" # has to be a string input
 
 start = time.time()
 workingDir = os.getcwd()
@@ -81,7 +82,7 @@ def getAmplitudesInBin(params):
             shutil.move(resultsFile,resultsFilePath)
             if os.path.exists(seedFile) and os.stat(seedFile).st_size!=0: # param_init.cfg only exists if the fit converged
                 shutil.move(seedFile,os.getcwd()+"/"+logDir+"_"+waveset+"/param_init_"+str(j)+".cfg")
-            getAmplitudeCmd='getAmpsInBin "'+binCfgDest+'" "'+resultsFilePath+'" "'+pols+'" "'+str(j)+'"'
+            getAmplitudeCmd='getAmpsInBin "'+binCfgDest+'" "'+resultsFilePath+'" "'+pols+'" "'+str(j)+'" "'+doAccCorr+'"'
             print(getAmplitudeCmd)
             getAmplitudeCmd=getAmplitudeCmd.split(" ")
             getAmplitudeCmd=[cmd.replace('"','') for cmd in getAmplitudeCmd]
@@ -124,11 +125,6 @@ def gatherResults():
     Gather all the fit results into one file
     '''
     print("Grabbing all the results")
-    try:
-        os.system("mkdir -p "+workingDir+"/"+"finalAmps/"+waveset)
-    except:
-        shutil.rmtree(workingDir+"/"+"finalAmps/"+waveset)
-        os.system("mkdir -p "+workingDir+"/"+"finalAmps/"+waveset)
     for binNum in range(startBin,endBin):
         binName="bin_"+str(binNum)
         os.chdir(binName)
@@ -149,15 +145,38 @@ def gatherResults():
         os.system("cp amplitudes.txt "+workingDir+"/finalAmps/"+waveset+"/amplitudes-binNum"+str(binNum)+".txt")
         os.chdir("..")
 
+def gatherMomentResults(verbose):
+    '''
+    Gather all the fit results into one file
+    '''
+    # Need to grab the mass binning to input to project_moments_polarized
+    with open(workingDir+"/divideData.pl") as f:
+        for line in f:
+            if line.startswith("$lowMass"):
+                lowMass=line.split("=")[-1].split(";")[0].rstrip().lstrip()
+            if line.startswith("$highMass"):
+                highMass=line.split("=")[-1].split(";")[0].rstrip().lstrip()
+            if line.startswith("$nBins"):
+                nBins=line.split("=")[-1].split(";")[0].rstrip().lstrip()
+            if line.startswith("$fitName"):
+                fitName=line.split("=")[-1].split(";")[0].rstrip().lstrip()
+    print("Grabbing all the moments results")
+    for binNum in range(startBin,endBin):
+        outfile="moments-binNum"+str(binNum)+".txt"
+        cmd="project_moments_polarized -o "+workingDir+"/finalAmps/"+waveset+"/"+outfile+" -w "+waveset+" -imax "+str(numIters)+" -b "+str(binNum)
+        cmd+=" -mmin "+lowMass+" -mmax "+highMass+" -mbins "+nBins+" -fitdir "+fitName+" -v "+str(verbose)
+        print("running: "+cmd)
+        os.system(cmd)
+
 ### CHOOSE BIN NUMBER
 if __name__ == '__main__':
     os.chdir(fitDir)
     startBin=0
-    endBin=45
-    numIters=30 # number of iterations to randomly sample and try to fit. No guarantees any of them will converge
+    endBin=25
+    numIters=50 # number of iterations to randomly sample and try to fit. No guarantees any of them will converge
     # EACH BIN SHARES THE SAME SEED FOR A GIVEN ITERATION
     seeds=[random.randint(1,100000) for _ in range(numIters)]
-    processes=60 # number of process to spawn to do the fits
+    processes=50 # number of process to spawn to do the fits
     if processes > (endBin-startBin)*numIters:
         print("You are trying to spawn more processes than available jobs")
         print(" choose better")
@@ -169,19 +188,19 @@ if __name__ == '__main__':
     #######################
     lmess=[
             # S, D0, D1 + igore polarization / choose one reflectivity
-            [
-            [0,0,"+",True],
-            [2,0,"+",False],
-            [2,1,"+",False],
-            ],
-            [
-            [0,0,"+",True],
-            [2,-2,"+",False],
-            [2,-1,"+",False],
-            [2,0,"+",False],
-            [2,1,"+",False],
-            [2,2,"+",False],
-            ]
+#            [
+#            [0,0,"+",True],
+#            [2,0,"+",False],
+#            [2,1,"+",False],
+#            ],
+#            [
+#            [0,0,"+",True],
+#            [2,-2,"+",False],
+#            [2,-1,"+",False],
+#            [2,0,"+",False],
+#            [2,1,"+",False],
+#            [2,2,"+",False],
+#            ]
 #            # S + TMD + P
 #            [
 #            [0,0,"+",True],
@@ -223,21 +242,33 @@ if __name__ == '__main__':
 #            [1,1,"+",False],
 #            [1,1,"-",False]
 #            ]
-# KMATRIX
+#            # SD positive M, epsilon
 #            [
 #            [0,0,"+",True],
-#            [0,0,"-",True],
 #            [2,0,"+",False],
-#            [2,0,"-",False],
+#            [2,1,"+",False],
 #            [2,2,"+",False],
-#            [2,2,"-",False],
-#            ],
+#            ]
+#            # SD positive M, both refs
 #            [
 #            [0,0,"+",True],
-#            [0,0,"-",True],
+#            [2,0,"+",False],
+#            [2,1,"+",False],
 #            [2,2,"+",False],
-#            [2,2,"-",False],
-#            ],
+#            [0,0,"-",True],
+#            [2,0,"-",False],
+#            [2,1,"-",False],
+#            [2,2,"-",False]
+#            ]
+# KMATRIX
+            [
+            [0,0,"+",True],
+            [2,0,"+",False],
+            [2,2,"+",False],
+            [0,0,"-",True],
+            [2,0,"-",False],
+            [2,2,"-",False],
+            ],
 # ALL 
 #            [
 #            [0,0,"+",True],
@@ -265,19 +296,19 @@ if __name__ == '__main__':
     ######################
     # One day we can merge these sections but so far calculating ambiguites for {S,D0,D1} is implemented
     ######################
-#    for lmes in lmess:
-#        waveset=constructOutputFileName(lmes)#.split("(")[0]
-#        print(waveset)
-#
-#        #### CODE TO DO RANDOMIZED FITS
-#        cleanLogFolders()
-#        params=[(i,j) for i in range(startBin,endBin) for j in range(numIters)]
-#        p=Pool(processes)
-#        p.map(getAmplitudesInBin, params)
-#        p.terminate()
+    for lmes in lmess:
+        waveset=constructOutputFileName(lmes)#.split("(")[0]
+        print(waveset)
 
+        #### CODE TO DO RANDOMIZED FITS
+        cleanLogFolders()
+        params=[(i,j) for i in range(startBin,endBin) for j in range(numIters)]
+        p=Pool(processes)
+        p.map(getAmplitudesInBin, params)
+        p.terminate()
+
+        #### CODE TO EXTRACT THE AMBIGUITES
 #    for lmes in lmess[:1]:
-#        #### CODE TO EXTRACT THE AMBIGUITES
 #        searchStrForAmps=["PositiveRe"] # Search strings that will be used to find amplitudes and ignore others, i.e. Since PositiveRe=PositiveIm we neglect Im part
 #        searchStrForPols="000" # All the polarizations share the same amplitude so just pick one
 #        binLocations=[fitDir+"/bin_"+str(binNum) for binNum in range(startBin,endBin)]
@@ -287,8 +318,18 @@ if __name__ == '__main__':
     for lmes in lmess:
         #### GATHER RESULTS INTO FINALAMPS FOLDER
         waveset=constructOutputFileName(lmes)#.split("(")[0]
+        try:
+            os.system("mkdir -p "+workingDir+"/"+"finalAmps/"+waveset)
+        except:
+            shutil.rmtree(workingDir+"/"+"finalAmps/"+waveset)
+        os.system("mkdir -p "+workingDir+"/"+"finalAmps/"+waveset)
         print(waveset)
+
+        # Gather all the amplitudeFitsX.log files into a central location in the newly created directory 
         gatherResults()
+
+        # Extract moments for all bins
+        gatherMomentResults(0) # integer boolean argument is whether to verbose output
     
 stop = time.time()
 print("Execution time in seconds: %s" % (stop-start))
