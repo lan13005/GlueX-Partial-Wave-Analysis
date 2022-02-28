@@ -15,10 +15,10 @@ from determineAmbiguities import executeFinders
 fitName="EtaPi_fit" # location of the folder containing the inputs that were created from divideData.pl
 seedFileTag="param_init" # seedFile name. Should also match the variable from divideData.pl 
 seedAmpInit=9183 # choose a seed to randomly start to sample from
-rndSamp_flag=True; # doesnt do anything right now
 verbose=False
 keepLogs=True
 doAccCorr="true" # has to be a string input
+factorSample=[False,5] # (first arg)should we bootstrap the acc mc with a sampling factor(second argument)
 
 start = time.time()
 workingDir = os.getcwd()
@@ -35,6 +35,18 @@ def getAmplitudesInBin(params):
     binCfgSrc = "bin_"+str(binNum)+"-full.cfg"
     binCfgDest, pols=writeCfg(lmes,binCfgSrc,seedAmpInit,j)
     os.system("touch "+seedFile)
+
+    if factorSample[0]:
+        with open(binCfgDest,'r') as cfgFile:
+            for line in cfgFile.readlines():
+                if line.startswith("accmc"):
+                    searchStr=line.rstrip().lstrip()
+        prefix=" ".join(searchStr.split(" ")[:2])
+        files=searchStr.split(" ")[3]
+        args=" -s "+str(random.randrange(9999999))+" -n "+str(factorSample[1])
+        replaceStr=prefix+" ROOTDataReaderBootstrap "+files+args
+        sedArgs=["sed","-i",'s@'+searchStr+'@'+replaceStr+'@g',binCfgDest]
+        subprocess.Popen(sedArgs, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).wait()
     
     haveHeader=False
     with open(logDir+"_"+waveset+"/amplitude"+str(j)+".txt","w") as outFile, open(logDir+"_"+waveset+"/amplitudeFits"+str(j)+".log","w+") as logFile:
@@ -172,7 +184,7 @@ def gatherMomentResults(verbose):
 if __name__ == '__main__':
     os.chdir(fitDir)
     startBin=0
-    endBin=25
+    endBin=13
     numIters=50 # number of iterations to randomly sample and try to fit. No guarantees any of them will converge
     # EACH BIN SHARES THE SAME SEED FOR A GIVEN ITERATION
     seeds=[random.randint(1,100000) for _ in range(numIters)]
@@ -217,16 +229,16 @@ if __name__ == '__main__':
 #            [2,2,"+",False]
 #            ],
 #            # S + TMD 
-#            [
-#            [0,0,"+",True],
-#            [0,0,"-",True],
-#            [2,-1,"-",False],
-#            [2,0,"+",False],
-#            [2,0,"-",False],
-#            [2,1,"+",False],
-#            [2,1,"-",False],
-#            [2,2,"+",False]
-#            ],
+            [
+            [0,0,"+",True],
+            [0,0,"-",False],
+            [2,-1,"-",False],
+            [2,0,"+",False],
+            [2,0,"-",False],
+            [2,1,"+",False],
+            [2,1,"-",False],
+            [2,2,"+",False]
+            ],
 #            # SPD positive M
 #            [
 #            [0,0,"+",True],
@@ -261,14 +273,14 @@ if __name__ == '__main__':
 #            [2,2,"-",False]
 #            ]
 # KMATRIX
-            [
-            [0,0,"+",True],
-            [2,0,"+",False],
-            [2,2,"+",False],
-            [0,0,"-",True],
-            [2,0,"-",False],
-            [2,2,"-",False],
-            ],
+#            [
+#            [0,0,"+",True],
+#            [2,0,"+",False],
+#            [2,2,"+",False],
+#            [0,0,"-",True],
+#            [2,0,"-",False],
+#            [2,2,"-",False],
+#            ],
 # ALL 
 #            [
 #            [0,0,"+",True],

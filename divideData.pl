@@ -7,9 +7,12 @@ use Cwd;
 #$nBins = 45; #30; #45; because it is kind of small and (2-0.7)/26 = 0.05 which is nice and round
 
 # for the 5tbins, always have 0.8 as the lower bound
-$lowMass = 0.9;#0.7; #1.04; #0.7;#0.82;#0.7; # 0.8 for 5 tbins
-$highMass = 1.9;#2.5; #1.56; #1.98;#2.5; #2.0,2.4,2.6,2.8,2.8
-$nBins = 25;#45; #13; #45;#29;#45; #30,40,45,50,50
+#$lowMass = 0.9;#0.7; #1.04; #0.7;#0.82;#0.7; # 0.8 for 5 tbins
+#$highMass = 1.9;#2.5; #1.56; #1.98;#2.5; #2.0,2.4,2.6,2.8,2.8
+#$nBins = 40;#45; #13; #45;#29;#45; #30,40,45,50,50
+$lowMass = 1.04;#0.7; #1.04; #0.7;#0.82;#0.7; # 0.8 for 5 tbins
+$highMass = 1.56;#2.5; #1.56; #1.98;#2.5; #2.0,2.4,2.6,2.8,2.8
+$nBins = 13;#45; #13; #45;#29;#45; #30,40,45,50,50
 
 # pi0pi0
 #$lowMass = 0.4; #0.9;#0.7; #1.04; #0.7;#0.82;#0.7; # 0.8 for 5 tbins
@@ -40,17 +43,15 @@ print "\n===================================\n";
 #$baseBkgFileName="amptools_malte_kmatrix_2018_8_t0110_e8288_sb_";
 
 #### Comparing the b1+kmatrix mc fits and kmatrix fits. See how b1 affects the fits
-$baseGenDir="/d/grid17/ln16/myDSelector/amptools/zKmatrixB1/";
-$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zKmatrixB1/";
-$baseBkgDir="/d/grid17/ln16/myDSelector/amptools/zKmatrixB1/";
-$baseDatDir="/d/grid17/ln16/myDSelector/amptools/zKmatrixB1/";
-$baseGenFileName="amptools_flat_gen_2018_8_tLT1_";
-$baseAccFileName="amptools_flat_2018_8_tLT1_";
-#$baseBkgFileName="amptools_b1PlusKmatrix_t011_e8288_sb_";
-#$baseDatFileName="amptools_b1PlusKmatrix_t011_e8288_tot_";
-$baseBkgFileName="amptools_kmatrix_t011_e8288_sb_resummed_";
-$baseDatFileName="amptools_kmatrix_t011_e8288_tot_resummed_";
-#$baseDatFileName="amptools_kmatrix_t011_e8288_sig_resummed_"; # temporarily use sig as data to check how handling of bkgs changes things
+#$baseGenDir="/d/grid17/ln16/myDSelector/amptools/zKmatrix_v4/";
+#$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zKmatrix_v4/";
+#$baseBkgDir="/d/grid17/ln16/myDSelector/amptools/zKmatrix_v4/";
+#$baseDatDir="/d/grid17/ln16/myDSelector/amptools/zKmatrix_v4/";
+#$baseGenFileName="amptools_flat_2018_8_gen_t011_";
+#$baseAccFileName="amptools_flat_2018_8_t011_e8288_sig_newWeights_";
+#$baseBkgFileName="amptools_kmatrix_t011_e8288_sb_newWeights_";
+#$baseDatFileName="amptools_kmatrix_t011_e8288_tot_newWeights_";
+
 
 #$baseGenDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/";
 #$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/dataDriven_backgrounds/";
@@ -69,14 +70,17 @@ $baseDatFileName="amptools_kmatrix_t011_e8288_tot_resummed_";
 #$baseAccFileName="amptools_flat_phase1_t0103_e8288_sig_";
 #$baseBkgFileName="amptools_data_phase1_t0103_e8288_sb_";
 #$baseDatFileName="amptools_data_phase1_t0103_e8288_tot_";
-#$baseGenDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/3tbins_a2wider_v2/";
-#$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/3tbins_a2wider_v2/";
-#$baseBkgDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/3tbins_a2wider_v2/";
-#$baseDatDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/3tbins_a2wider_v2/";
-#$baseGenFileName="amptools_flat_gen_phase1_t0103_a2_";
-#$baseAccFileName="amptools_flat_phase1_t0103_e8288_sig_a2_";
-#$baseBkgFileName="amptools_data_phase1_t0103_e8288_sb_a2_";
-#$baseDatFileName="amptools_data_phase1_t0103_e8288_tot_a2_";
+#
+#
+$t="075100";
+$baseGenDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/baseFiles_v3/tbins5/$t/";
+$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/baseFiles_v3/tbins5/$t/";
+$baseBkgDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/baseFiles_v3/tbins5/$t/";
+$baseDatDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/baseFiles_v3/tbins5/$t/";
+$baseGenFileName="amptools_flat_gen_phase_1_t$t\_e8288_tree_flat_a2_pol";
+$baseAccFileName="amptools_flat_phase1_t$t\_e8288_sig_a2_pVHpi0p_";
+$baseBkgFileName="amptools_data_phase1_t$t\_e8288_sb_a2_pVHpi0p_";
+$baseDatFileName="amptools_data_phase1_t$t\_e8288_tot_a2_pVHpi0p_";
 
 #$baseGenDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/shared_gen_files/";
 #$baseAccDir="/d/grid17/ln16/myDSelector/amptools/zPhase1_t0103061_e79828890/t0110_zach_dnp/";#_vh/";
@@ -99,7 +103,7 @@ $baseDatFileName="amptools_kmatrix_t011_e8288_tot_resummed_";
 #$baseDatFileName="amptools_data_2017_t011_e8288_tot_";
 
 
-@polTags=qw(000);# 045 090 135);# AMO);
+@polTags=qw(000 045 090 135);# AMO);
 print "DATAFILES:\n";
 foreach $polTag (@polTags){
     print "$baseDatDir$baseDatFileName$polTag\.root\n";
@@ -128,8 +132,8 @@ print "------------------\n";
 # this file sould be used for partially polarized or unpolarized beam fits
 
 #$cfgTempl = "$workingDir/zlm_etapi_bothReflect_bothM_loop_pipi.cfg";
-#$cfgTempl = "$workingDir/zlm_etapi_bothReflect_bothM_loop.cfg";
-$cfgTempl = "$workingDir/zlm_etapi_bothReflect_bothM.cfg";
+$cfgTempl = "$workingDir/zlm_etapi_bothReflect_bothM_loop.cfg";
+#$cfgTempl = "$workingDir/zlm_etapi_bothReflect_bothM.cfg";
 #$cfgTempl = "$workingDir/zlm_etapi_bothReflect_bothM_loop_zeroPolMag.cfg";
 #$cfgTempl = "$workingDir/zlm_etapi_bothReflect_bothM_loop_sb0.cfg";
 
